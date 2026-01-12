@@ -1,5 +1,7 @@
 ﻿const sheetCsvUrl =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5Y9SskoVGkOZ80BIAsUOb9gHX4CzPbacMf1_GmfsFZulmKCe30sx24GyhQ8JpCkCfLH5wNHyZAcmV/pub?output=csv";
+const storeCacheKey = "lindilove-store-cache";
+const storeCacheTtlMs = 10 * 60 * 1000;
 
 const fallbackStore = {
   categories: ["Свещи", "Сапунени цветя"],
@@ -12,8 +14,8 @@ const fallbackStore = {
       category: "Свещи",
       note: "Създадена за уютни вечери",
       image: "images/candle-vanilla.svg",
-      url: "",
       tags: ["14 февруари"],
+      gallery: [],
     },
     {
       id: 2,
@@ -22,8 +24,8 @@ const fallbackStore = {
       category: "Свещи",
       note: "Сладък плодово-флорален аромат",
       image: "images/candle-raspberry.svg",
-      url: "",
       tags: ["Рожден ден"],
+      gallery: [],
     },
     {
       id: 3,
@@ -32,8 +34,8 @@ const fallbackStore = {
       category: "Свещи",
       note: "Дълбок релакс след дълъг ден",
       image: "images/candle-lavender.svg",
-      url: "",
       tags: ["Кръщене"],
+      gallery: [],
     },
     {
       id: 4,
@@ -42,8 +44,8 @@ const fallbackStore = {
       category: "Сапунени цветя",
       note: "Ръчно аранжиран букет",
       image: "images/flower-rose.svg",
-      url: "",
       tags: ["14 февруари", "Рожден ден"],
+      gallery: [],
     },
     {
       id: 5,
@@ -52,8 +54,8 @@ const fallbackStore = {
       category: "Сапунени цветя",
       note: "Нежни пастелни тонове",
       image: "images/flower-peony.svg",
-      url: "",
       tags: ["Рожден ден"],
+      gallery: [],
     },
     {
       id: 6,
@@ -62,8 +64,8 @@ const fallbackStore = {
       category: "Сапунени цветя",
       note: "Светло и свежо ухание",
       image: "images/flower-lily.svg",
-      url: "",
       tags: ["Кръщене"],
+      gallery: [],
     },
   ],
 };
@@ -168,6 +170,17 @@ const loadStore = async () => {
   if (!sheetCsvUrl || sheetCsvUrl.includes("PASTE")) {
     return fallbackStore;
   }
+  const cached = sessionStorage.getItem(storeCacheKey);
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      if (Date.now() - parsed.timestamp < storeCacheTtlMs) {
+        return parsed.data;
+      }
+    } catch {
+      sessionStorage.removeItem(storeCacheKey);
+    }
+  }
   try {
     const response = await fetch(sheetCsvUrl, { cache: "no-store" });
     if (!response.ok) {
@@ -180,7 +193,12 @@ const loadStore = async () => {
     if (!products.length) {
       return fallbackStore;
     }
-    return buildStoreFromProducts(products);
+    const data = buildStoreFromProducts(products);
+    sessionStorage.setItem(
+      storeCacheKey,
+      JSON.stringify({ timestamp: Date.now(), data })
+    );
+    return data;
   } catch {
     return fallbackStore;
   }
@@ -215,7 +233,7 @@ const renderProducts = (category, activeTags) => {
     const card = document.createElement("article");
     card.className = "product-card reveal";
     card.innerHTML = `
-      <span class="tag">${category}</span>
+      <span class="tag">${category === "all" ? product.category : category}</span>
       <img src="${getProductImage(product)}" alt="${product.name}" loading="lazy" />
       <h4>${product.name}</h4>
       <p>${product.note}</p>
@@ -238,6 +256,7 @@ const setupCategorySwitch = () => {
   allButton.dataset.category = "all";
   allButton.textContent = "Всички";
   container.appendChild(allButton);
+
   store.categories.forEach((category) => {
     const button = document.createElement("button");
     button.type = "button";
@@ -352,28 +371,6 @@ const bootProductsPage = () => {
   setupTagEvents();
 };
 
-const bootProductDetailPage = () => {
-  const title = document.querySelector("[data-product-title]");
-  if (!title) {
-    return;
-  }
-
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
-  const product = store.products.find((item) => String(item.id) === String(id));
-  const error = document.querySelector("[data-product-error]");
-
-  if (!product) {
-    if (error) {
-      error.style.display = "block";
-    }
-    return;
-  }
-
-  renderProductDetail(product);
-  setupOrderForm(product);
-};
-
 const setupOrderForm = (product) => {
   const button = document.querySelector("[data-order-form-button]");
   const modal = document.querySelector("[data-order-form-modal]");
@@ -405,6 +402,28 @@ const setupOrderForm = (product) => {
     closeModal();
     form.reset();
   });
+};
+
+const bootProductDetailPage = () => {
+  const title = document.querySelector("[data-product-title]");
+  if (!title) {
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const product = store.products.find((item) => String(item.id) === String(id));
+  const error = document.querySelector("[data-product-error]");
+
+  if (!product) {
+    if (error) {
+      error.style.display = "block";
+    }
+    return;
+  }
+
+  renderProductDetail(product);
+  setupOrderForm(product);
 };
 
 const bootCookieBanner = () => {
@@ -472,12 +491,24 @@ const bootOrderModal = () => {
 };
 
 const boot = async () => {
-  store = await loadStore();
-  bootProductsPage();
-  bootProductDetailPage();
   bootCookieBanner();
   bootNavToggle();
   bootOrderModal();
+
+  const isProductsPage = Boolean(
+    document.querySelector("[data-product-grid]")
+  );
+  const isProductDetailPage = Boolean(
+    document.querySelector("[data-product-title]")
+  );
+
+  if (isProductsPage || isProductDetailPage) {
+    store = await loadStore();
+    bootProductsPage();
+    bootProductDetailPage();
+  } else {
+    loadStore();
+  }
 };
 
 boot();
