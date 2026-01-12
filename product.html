@@ -1,0 +1,132 @@
+﻿<!doctype html>
+<html lang="bg">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lindilove | Продукт</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container navbar">
+        <a class="brand" href="index.html">Lindilove</a>
+        <nav class="nav-links" data-nav-menu>
+          <a href="index.html">Начало</a>
+          <a class="active" href="products.html">Продукти</a>
+          <a href="contact.html">Контакти</a>
+        </nav>
+        <div class="nav-right">
+          <a class="nav-contact" href="tel:0888888888">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                fill="currentColor"
+                d="M6.62 10.79a15.53 15.53 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1v3.5a1 1 0 01-1 1C10.3 21.01 3 13.7 3 4.5a1 1 0 011-1H7.5a1 1 0 011 1c0 1.24.2 2.45.57 3.57a1 1 0 01-.24 1.02z"
+              />
+            </svg>
+            0888 888 888
+          </a>
+          <button class="nav-toggle" type="button" data-nav-toggle aria-label="Отвори меню">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                fill="currentColor"
+                d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="container detail-hero">
+        <div class="detail-media">
+          <img data-product-image src="images/gallery-1.svg" alt="Продукт" />
+          <div class="detail-gallery-inline" data-product-gallery></div>
+        </div>
+        <div class="detail-meta">
+          <a class="back-link" href="products.html">← Обратно към продуктите</a>
+          <span class="tag" data-product-category></span>
+          <h1 class="section-title" data-product-title>Продукт</h1>
+          <div class="tag-list" data-product-tags></div>
+          <p data-product-note></p>
+          <p class="price" data-product-price></p>
+          <button class="btn" type="button" data-order-form-button>
+            Поръчай
+          </button>
+          <p data-product-error style="display: none; color: #7a3146;">
+            Продуктът не е намерен.
+          </p>
+        </div>
+      </section>
+
+      <section class="container detail-faq">
+        <h3>Въпроси и отговори</h3>
+        <div class="faq-card">
+          <p>
+            Сайтът е тип каталог. За да направите поръчка е необходимо да направите
+            скрийншот на избрания от вас артикул и да се свържете с нас на
+            Viber/WhatsApp 0888888888 или чрез лично съобщение на Facebook страницата ни:
+            <a href="https://www.facebook.com/profile.php?id=100091524500605" target="_blank" rel="noreferrer">
+              LindiLove
+            </a>.
+          </p>
+          <p>
+            За да бъде приета поръчка, след нейното уточняване е необходимо капаро в размер
+            на 50% от стойността й.
+          </p>
+          <p>Благодарим ви!</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">Lindilove © 2024. Създадени с любов.</div>
+    </footer>
+
+    <div class="cookie-banner" data-cookie-banner>
+      <p>Използваме бисквитки, за да подобрим преживяването ви.</p>
+      <button class="btn" type="button" data-cookie-accept>Приемам</button>
+    </div>
+
+    <div class="modal-backdrop" data-order-form-modal hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-label="Поръчка">
+        <button class="modal-close" type="button" data-order-form-close aria-label="Затвори">
+          ×
+        </button>
+        <h3>Поръчка</h3>
+        <form class="order-form" data-order-form>
+          <label>
+            Продукт
+            <input type="text" name="product" data-order-product readonly />
+          </label>
+          <label>
+            Име
+            <input type="text" name="name" required />
+          </label>
+          <label>
+            Имейл
+            <input type="email" name="email" required />
+          </label>
+          <label>
+            Телефон
+            <input type="tel" name="phone" required />
+          </label>
+          <label>
+            Съобщение
+            <textarea name="message" required></textarea>
+          </label>
+          <button class="btn" type="submit">Изпрати</button>
+          <p class="form-note">Ще се свържем с вас до 24ч за доуточняване.</p>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
