@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lindilove | Продукт</title>
+    <title>LindiLove | Продукт</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,7 +15,7 @@
   <body>
     <header>
       <div class="container navbar">
-        <a class="brand" href="index.html">Lindilove</a>
+        <a class="brand" href="index.html">LindiLove</a>
         <nav class="nav-links" data-nav-menu>
           <a href="index.html">Начало</a>
           <a class="active" href="products.html">Продукти</a>
@@ -46,11 +46,17 @@
     <main>
       <section class="container detail-hero">
         <div class="detail-media">
-          <img data-product-image src="images/gallery-1.svg" alt="Продукт" />
-          <div class="detail-gallery-inline" data-product-gallery></div>
+          <a class="detail-main-link" data-product-image-link href="images/gallery-1.svg">
+            <img data-product-image src="images/gallery-1.svg" alt="Продукт" />
+          </a>
+          <div class="detail-gallery-wrap">
+            <button class="gallery-nav" type="button" data-gallery-prev aria-label="Предишна снимка">&larr;</button>
+            <div class="detail-gallery-inline" data-product-gallery></div>
+            <button class="gallery-nav" type="button" data-gallery-next aria-label="Следваща снимка">&rarr;</button>
+          </div>
         </div>
         <div class="detail-meta">
-          <a class="back-link" href="products.html">← Обратно към продуктите</a>
+          <a class="back-link" href="products.html">&larr; Върни се към продуктите</a>
           <span class="tag" data-product-category></span>
           <h1 class="section-title" data-product-title>Продукт</h1>
           <div class="tag-list" data-product-tags></div>
@@ -60,13 +66,13 @@
             Поръчай
           </button>
           <p data-product-error style="display: none; color: #7a3146;">
-            Продуктът не е намерен.
+            Продуктът не е открит.
           </p>
         </div>
       </section>
 
       <section class="container detail-faq">
-        <h3>Въпроси и отговори</h3>
+        <h3>Как да поръчам</h3>
         <div class="faq-card">
           <p>
             Сайтът е тип каталог. За да направите поръчка е необходимо да направите
@@ -86,21 +92,39 @@
     </main>
 
     <footer>
-      <div class="container">Lindilove © 2024. Създадени с любов.</div>
+      <div class="container footer-content">
+        <span>LindiLove 2024. Създадени с любов.</span>
+        <a class="footer-privacy" href="privacy.html">Политика за поверителност</a>
+        <div class="footer-social">
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">F</span>
+            Facebook
+          </a>
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">IG</span>
+            Instagram
+          </a>
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">TT</span>
+            Tiktok
+          </a>
+        </div>
+      </div>
     </footer>
 
     <div class="cookie-banner" data-cookie-banner>
-      <p>Използваме бисквитки, за да подобрим преживяването ви.</p>
-      <button class="btn" type="button" data-cookie-accept>Приемам</button>
+      <p>Използваме бисквитки, за да подобрим изживяването ви.</p>
+      <button class="btn" type="button" data-cookie-accept>Разбрах</button>
     </div>
 
     <div class="modal-backdrop" data-order-form-modal hidden>
       <div class="modal-card" role="dialog" aria-modal="true" aria-label="Поръчка">
         <button class="modal-close" type="button" data-order-form-close aria-label="Затвори">
-          ×
+          x
         </button>
         <h3>Поръчка</h3>
-        <form class="order-form" data-order-form>
+        <form class="order-form" data-order-form action="send.php" method="post">
+          <input type="hidden" name="form_type" value="order" />
           <label>
             Продукт
             <input type="text" name="product" data-order-product readonly />
@@ -121,9 +145,22 @@
             Съобщение
             <textarea name="message" required></textarea>
           </label>
-          <button class="btn" type="submit">Изпрати</button>
+          <button class="btn" type="submit">Поръчай</button>
           <p class="form-note">Ще се свържем с вас до 24ч за доуточняване.</p>
+          <p class="form-success" data-form-success hidden>
+            Благодарим ви! Ще се свържем с вас скоро.
+          </p>
         </form>
+      </div>
+    </div>
+
+
+    <div class="lightbox" data-lightbox hidden>
+      <div class="lightbox-inner" role="dialog" aria-modal="true" aria-label="Преглед на снимка">
+        <button class="lightbox-close" type="button" data-lightbox-close aria-label="Затвори">
+          x
+        </button>
+        <img data-lightbox-image src="images/gallery-1.svg" alt="Продукт" />
       </div>
     </div>
 

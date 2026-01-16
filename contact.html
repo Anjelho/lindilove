@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lindilove | Контакти</title>
+    <title>LindiLove | Контакти</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,7 +15,7 @@
   <body>
     <header>
       <div class="container navbar">
-        <a class="brand" href="index.html">Lindilove</a>
+        <a class="brand" href="index.html">LindiLove</a>
         <nav class="nav-links" data-nav-menu>
           <a href="index.html">Начало</a>
           <a href="products.html">Продукти</a>
@@ -48,18 +48,19 @@
         <div>
           <h1 class="section-title">Свържи се с нас</h1>
           <p>
-            Кажи ни какво търсиш и ще подготвим персонална препоръка за свещи или
-            сапунени цветя.
+            Пиши ни по всяко време и ще ти отговорим възможно най-скоро.
+            Можеш да зададеш въпрос, да направиш запитване или да уточним детайли.
           </p>
           <p>
-            Отговаряме бързо и можем да предложим подаръчна опаковка и доставка.
+            Използвай формата, за да оставиш твоите данни и съобщение.
           </p>
         </div>
         <div class="form-card">
-          <form>
+          <form data-contact-form action="send.php" method="post">
+            <input type="hidden" name="form_type" value="contact" />
             <label>
               Име
-              <input type="text" name="name" placeholder="Твоето име" required />
+              <input type="text" name="name" placeholder="Вашето име" required />
             </label>
             <label>
               Имейл
@@ -71,21 +72,41 @@
             </label>
             <label>
               Съобщение
-              <textarea name="message" placeholder="Напиши ни какво ти е нужно"></textarea>
+              <textarea name="message" placeholder="Напиши какво желаеш да уточним"></textarea>
             </label>
             <button class="btn" type="submit">Изпрати</button>
+            <p class="form-success" data-form-success hidden>
+              Благодарим ви! Ще се свържем с вас скоро.
+            </p>
           </form>
         </div>
       </section>
     </main>
 
     <footer>
-      <div class="container">Lindilove © 2024. Създадени с любов.</div>
+      <div class="container footer-content">
+        <span>LindiLove 2024. Създадени с любов.</span>
+        <a class="footer-privacy" href="privacy.html">Политика за поверителност</a>
+        <div class="footer-social">
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">F</span>
+            Facebook
+          </a>
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">IG</span>
+            Instagram
+          </a>
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">TT</span>
+            Tiktok
+          </a>
+        </div>
+      </div>
     </footer>
 
     <div class="cookie-banner" data-cookie-banner>
-      <p>Използваме бисквитки, за да подобрим преживяването ви.</p>
-      <button class="btn" type="button" data-cookie-accept>Приемам</button>
+      <p>Използваме бисквитки, за да подобрим изживяването ви.</p>
+      <button class="btn" type="button" data-cookie-accept>Разбрах</button>
     </div>
 
     <script src="script.js"></script>

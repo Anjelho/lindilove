@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lindilove | Ръчно изработени аромати</title>
+    <title>LindiLove | Ръчно изработени подаръци</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,7 +15,7 @@
   <body>
     <header>
       <div class="container navbar">
-        <a class="brand" href="index.html">Lindilove</a>
+        <a class="brand" href="index.html">LindiLove</a>
         <nav class="nav-links" data-nav-menu>
           <a class="active" href="index.html">Начало</a>
           <a href="products.html">Продукти</a>
@@ -44,61 +44,176 @@
     </header>
 
     <main>
-      <section class="container hero">
-        <div class="reveal">
-          <h1>Ръчно изработени ароматни свещи и сапунени цветя.</h1>
-          <p>
-            Lindilove събира ароматите на природата в нежни колекции от свещи и
-            флорални композиции. Всичко е направено с грижа, внимание към детайла
-            и любов към красивите моменти.
-          </p>
-          <a class="btn" href="products.html">Разгледай колекциите</a>
-        </div>
-        <div class="hero-card reveal delay-1">
-          <div class="card-content">
-            <p class="tag">Как да поръчам</p>
-            <h2>Колекция "Сутрешна нежност"</h2>
-            <p>
-              Топли, пудрени и сладки аромати, създадени да носят уют в твоя дом.
-            </p>
-            <button class="btn" type="button" data-order-button>
-              Как да поръчам
-            </button>
+      <section class="home-hero">
+        <div class="slider" data-slider>
+          <video class="slider-video" autoplay muted loop playsinline preload="auto">
+            <source src="images/1.mp4" type="video/mp4" />
+          </video>
+          <div class="slider-inner">
+            <div class="slider-track" data-slider-track>
+              <article class="slide is-active">
+                <div>
+                  <p class="tag">LindiLove Studio</p>
+                  <h1>Нежна красота, създадена с любов.</h1>
+                  <p>
+                    Създаваме ръчно ароматни свещи, сапунени цветя и подаръци за
+                    специални поводи.
+                  </p>
+                  <div class="slide-actions">
+                    <a class="btn" href="products.html">Разгледай продуктите</a>
+                    <button class="btn ghost" type="button" data-order-button>
+                      Как да поръчам
+                    </button>
+                  </div>
+                </div>
+              </article>
+              <article class="slide">
+                <div>
+                  <p class="tag">Нова колекция</p>
+                  <h2>Свещи, които разказват история.</h2>
+                  <p>
+                    Избрани аромати, натурални восъци и внимание към всеки детайл,
+                    за да създадем уют у дома.
+                  </p>
+                  <div class="slide-actions">
+                    <a class="btn" href="products.html">Разгледай продуктите</a>
+                    <button class="btn ghost" type="button" data-order-button>
+                      Как да поръчам
+                    </button>
+                  </div>
+                </div>
+              </article>
+              <article class="slide">
+                <div>
+                  <p class="tag">Подаръци с характер</p>
+                  <h2>Сапунени цветя и композиции.</h2>
+                  <p>
+                    Подари настроение, цвят и аромат за 14 февруари, рожден ден или
+                    кръщене с нашите композиции.
+                  </p>
+                  <div class="slide-actions">
+                    <a class="btn" href="products.html">Разгледай продуктите</a>
+                    <button class="btn ghost" type="button" data-order-button>
+                      Как да поръчам
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </div>
+            <div class="slider-controls">
+              <button class="slider-btn" type="button" data-slider-prev aria-label="Предишен">
+                &larr;
+              </button>
+              <div class="slider-dots" data-slider-dots></div>
+              <button class="slider-btn" type="button" data-slider-next aria-label="Следващ">
+                &rarr;
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="container">
-        <h2 class="section-title">Защо Lindilove?</h2>
-        <div class="features">
-          <article class="feature reveal">
-            <h3>Ръчна изработка</h3>
-            <p>Всяка свещ и всяко цвете се правят индивидуално.</p>
+      <section>
+        <div class="container about-section">
+          <div class="about-media">
+            <img src="images/f4.webp" alt="Създателят на LindiLove" />
+          </div>
+          <div class="about-content">
+            <h2 class="section-title">За мен</h2>
+            <p>
+              Аз съм човекът зад LindiLove и с любов изработвам всяка свещ и
+              композиция. Вдъхновявам се от малките радости и вниманието към детайла.
+            </p>
+            <p>
+              Всяка поръчка е персонална и създадена така, че да носи уют и емоция.
+              Благодаря, че подкрепяте ръчната изработка.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-alt">
+        <div class="container story-grid">
+          <article class="story-card">
+            <a class="story-media" href="products.html">
+              <img src="images/f1.webp" alt="Свежи композиции" loading="lazy" />
+            </a>
+            <div class="story-content">
+              <h3><a href="products.html">Свежи композиции</a></h3>
+              <p>Перфектни комбинации за празници и специални поводи.</p>
+            </div>
           </article>
-          <article class="feature reveal delay-1">
-            <h3>Естествени аромати</h3>
-            <p>Подбираме нежни композиции без натрапчиви нотки.</p>
+          <article class="story-card">
+            <a class="story-media" href="products.html">
+              <img src="images/f2.webp" alt="Подаръчна визия" loading="lazy" />
+            </a>
+            <div class="story-content">
+              <h3><a href="products.html">Подаръчна визия</a></h3>
+              <p>Красиво опаковани продукти с елегантен завършек.</p>
+            </div>
           </article>
-          <article class="feature reveal delay-2">
-            <h3>Персонален жест</h3>
-            <p>Подходящи подаръци за специални хора и поводи.</p>
+          <article class="story-card">
+            <a class="story-media" href="contact.html">
+              <img src="images/f3.webp" alt="Бърза комуникация" loading="lazy" />
+            </a>
+            <div class="story-content">
+              <h3><a href="contact.html">Бърза комуникация</a></h3>
+              <p>Пиши ни лесно и получи бърз отговор за всяка заявка.</p>
+            </div>
           </article>
-          <article class="feature reveal delay-3">
-            <h3>Красиви детайли</h3>
-            <p>Опаковките и декорациите са част от преживяването.</p>
-          </article>
+        </div>
+      </section>
+
+      <section class="section-alt">
+        <div class="container section-pad">
+          <h2 class="section-title">Защо LindiLove?</h2>
+          <div class="features">
+            <article class="feature reveal">
+              <h3>Ръчна изработка</h3>
+              <p>Всеки продукт е направен с внимание и грижа.</p>
+            </article>
+            <article class="feature reveal delay-1">
+              <h3>Качествени материали</h3>
+              <p>Подбираме суровини с фокус върху аромат и трайност.</p>
+            </article>
+            <article class="feature reveal delay-2">
+              <h3>Персонален подход</h3>
+              <p>Винаги можем да адаптираме детайлите според повода.</p>
+            </article>
+            <article class="feature reveal delay-3">
+              <h3>Топло отношение</h3>
+              <p>Общуваме бързо и с внимание към твоите идеи.</p>
+            </article>
+          </div>
         </div>
       </section>
     </main>
 
     <footer>
-      <div class="container">Lindilove © 2024. Създадени с любов.</div>
+      <div class="container footer-content">
+        <span>LindiLove 2024. Създадени с любов.</span>
+        <a class="footer-privacy" href="privacy.html">Политика за поверителност</a>
+        <div class="footer-social">
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">F</span>
+            Facebook
+          </a>
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">IG</span>
+            Instagram
+          </a>
+          <a class="footer-social-link" href="#">
+            <span class="footer-social-icon">TT</span>
+            Tiktok
+          </a>
+        </div>
+      </div>
     </footer>
 
     <div class="modal-backdrop" data-order-modal hidden>
       <div class="modal-card" role="dialog" aria-modal="true" aria-label="Как да поръчам">
         <button class="modal-close" type="button" data-order-close aria-label="Затвори">
-          ×
+          x
         </button>
         <h3>Как да поръчам</h3>
         <p>
@@ -118,8 +233,8 @@
     </div>
 
     <div class="cookie-banner" data-cookie-banner>
-      <p>Използваме бисквитки, за да подобрим преживяването ви.</p>
-      <button class="btn" type="button" data-cookie-accept>Приемам</button>
+      <p>Използваме бисквитки, за да подобрим изживяването ви.</p>
+      <button class="btn" type="button" data-cookie-accept>Разбрах</button>
     </div>
 
     <script src="script.js"></script>

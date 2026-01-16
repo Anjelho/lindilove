@@ -4,8 +4,8 @@ const storeCacheKey = "lindilove-store-cache";
 const storeCacheTtlMs = 10 * 60 * 1000;
 
 const fallbackStore = {
-  categories: ["Свещи", "Сапунени цветя"],
-  tags: ["14 февруари", "Рожден ден", "Кръщене"],
+  categories: ["Свещи", "Китки"],
+  tags: ["14 Февруари", "Рожден ден", "Кръщене"],
   products: [
     {
       id: 1,
@@ -14,63 +14,23 @@ const fallbackStore = {
       category: "Свещи",
       note: "Създадена за уютни вечери",
       image: "images/candle-vanilla.svg",
-      tags: ["14 февруари"],
-      gallery: [],
-    },
-    {
-      id: 2,
-      name: "Свещ - Палава малина",
-      price: "22 лв.",
-      category: "Свещи",
-      note: "Сладък плодово-флорален аромат",
-      image: "images/candle-raspberry.svg",
-      tags: ["Рожден ден"],
-      gallery: [],
-    },
-    {
-      id: 3,
-      name: "Свещ - Лаванда и кедър",
-      price: "26 лв.",
-      category: "Свещи",
-      note: "Дълбок релакс след дълъг ден",
-      image: "images/candle-lavender.svg",
-      tags: ["Кръщене"],
-      gallery: [],
-    },
-    {
-      id: 4,
-      name: "Сапунени цветя - Розова градина",
-      price: "32 лв.",
-      category: "Сапунени цветя",
-      note: "Ръчно аранжиран букет",
-      image: "images/flower-rose.svg",
-      tags: ["14 февруари", "Рожден ден"],
-      gallery: [],
-    },
-    {
-      id: 5,
-      name: "Сапунени цветя - Пудра божури",
-      price: "34 лв.",
-      category: "Сапунени цветя",
-      note: "Нежни пастелни тонове",
-      image: "images/flower-peony.svg",
-      tags: ["Рожден ден"],
-      gallery: [],
-    },
-    {
-      id: 6,
-      name: "Сапунени цветя - Слънчеви лилии",
-      price: "30 лв.",
-      category: "Сапунени цветя",
-      note: "Светло и свежо ухание",
-      image: "images/flower-lily.svg",
-      tags: ["Кръщене"],
+      tags: ["14 Февруари"],
       gallery: [],
     },
   ],
 };
 
 const normalizeText = (value) => (value || "").trim();
+
+const pickField = (row, keys) => {
+  for (const key of keys) {
+    const value = normalizeText(row[key]);
+    if (value) {
+      return value;
+    }
+  }
+  return "";
+};
 
 const splitCsvLine = (line, delimiter) => {
   const pattern =
@@ -131,21 +91,21 @@ const parseCsv = (text) => {
 const mapProducts = (rows) =>
   rows
     .map((row, index) => {
-      const tags = normalizeText(row.tags)
+      const tags = normalizeText(row.tags || row["тагове"] || row["таг"])
         .split("|")
         .map((item) => item.trim())
         .filter(Boolean);
-      const gallery = normalizeText(row.gallery)
+      const gallery = normalizeText(row.gallery || row["галерия"])
         .split("|")
         .map((item) => item.trim())
         .filter(Boolean);
       return {
         id: Number(row.id) || index + 1,
-        name: normalizeText(row.name),
-        price: normalizeText(row.price),
-        category: normalizeText(row.category),
-        note: normalizeText(row.note),
-        image: normalizeText(row.image),
+        name: pickField(row, ["name", "име", "продукт"]),
+        price: pickField(row, ["price", "цена"]),
+        category: pickField(row, ["category", "категория"]),
+        note: pickField(row, ["note", "описание", "description"]),
+        image: pickField(row, ["image", "снимка", "photo"]),
         tags,
         gallery,
       };
@@ -233,10 +193,10 @@ const renderProducts = (category, activeTags) => {
     const card = document.createElement("article");
     card.className = "product-card reveal";
     card.innerHTML = `
-      <span class="tag">${category === "all" ? product.category : category}</span>
-      <img src="${getProductImage(product)}" alt="${product.name}" loading="lazy" />
+      <a href="${getProductLink(product)}" aria-label="Виж детайли за ${product.name}">
+        <img src="${getProductImage(product)}" alt="${product.name}" loading="lazy" />
+      </a>
       <h4>${product.name}</h4>
-      <p>${product.note}</p>
       <span>${product.price}</span>
       <a href="${getProductLink(product)}">Виж детайли</a>
     `;
@@ -329,6 +289,7 @@ const renderProductDetail = (product) => {
   const price = document.querySelector("[data-product-price]");
   const note = document.querySelector("[data-product-note]");
   const image = document.querySelector("[data-product-image]");
+  const imageLink = document.querySelector("[data-product-image-link]");
   const category = document.querySelector("[data-product-category]");
   const tags = document.querySelector("[data-product-tags]");
   const gallery = document.querySelector("[data-product-gallery]");
@@ -336,9 +297,16 @@ const renderProductDetail = (product) => {
   title.textContent = product.name;
   price.textContent = product.price;
   note.textContent = product.note;
-  image.src = getProductImage(product);
-  image.alt = product.name;
   category.textContent = product.category;
+
+  const primaryImage = getProductImage(product);
+  if (image) {
+    image.src = primaryImage;
+    image.alt = product.name;
+  }
+  if (imageLink) {
+    imageLink.href = primaryImage;
+  }
 
   if (tags) {
     tags.innerHTML = "";
@@ -352,16 +320,89 @@ const renderProductDetail = (product) => {
 
   if (gallery) {
     gallery.innerHTML = "";
-    const gallerySources =
-      product.gallery && product.gallery.length
-        ? product.gallery
-        : ["images/gallery-1.svg", "images/gallery-2.svg", "images/gallery-3.svg"];
-    gallerySources.forEach((src) => {
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = "Детайл";
-      gallery.appendChild(img);
+    const fallbackGallery = [
+      "images/gallery-1.svg",
+      "images/gallery-2.svg",
+      "images/gallery-3.svg",
+    ];
+    const rawSources = [primaryImage].concat(
+      product.gallery && product.gallery.length ? product.gallery : fallbackGallery
+    );
+    const uniqueSources = Array.from(new Set(rawSources.filter(Boolean)));
+    let activeIndex = 0;
+
+    const setActiveThumb = (src) => {
+      const thumbs = gallery.querySelectorAll("img");
+      thumbs.forEach((thumb) => {
+        thumb.classList.toggle("is-active", thumb.dataset.src === src);
+      });
+    };
+
+    const updateNavVisibility = () => {
+      const canScroll = gallery.scrollWidth > gallery.clientWidth + 4;
+      if (prevButton) {
+        prevButton.classList.toggle("is-hidden", !canScroll);
+      }
+      if (nextButton) {
+        nextButton.classList.toggle("is-hidden", !canScroll);
+      }
+    };
+
+    const selectImage = (index) => {
+      const src = uniqueSources[index];
+      if (!src) {
+        return;
+      }
+      activeIndex = index;
+      if (image) {
+        image.src = src;
+        image.alt = product.name;
+      }
+      if (imageLink) {
+        imageLink.href = src;
+      }
+      setActiveThumb(src);
+      const thumb = gallery.querySelector(`img[data-index="${index}"]`);
+      if (thumb) {
+        thumb.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+      updateNavVisibility();
+    };
+
+    uniqueSources.forEach((src, index) => {
+      const thumb = document.createElement("img");
+      thumb.src = src;
+      thumb.alt = product.name;
+      thumb.dataset.src = src;
+      thumb.dataset.index = String(index);
+      if (index === 0) {
+        thumb.classList.add("is-active");
+      }
+      thumb.addEventListener("click", () => {
+        selectImage(index);
+      });
+      gallery.appendChild(thumb);
     });
+
+    const prevButton = document.querySelector("[data-gallery-prev]");
+    const nextButton = document.querySelector("[data-gallery-next]");
+
+    if (prevButton) {
+      prevButton.addEventListener("click", () => {
+        const nextIndex = (activeIndex - 1 + uniqueSources.length) % uniqueSources.length;
+        selectImage(nextIndex);
+      });
+    }
+    if (nextButton) {
+      nextButton.addEventListener("click", () => {
+        const nextIndex = (activeIndex + 1) % uniqueSources.length;
+        selectImage(nextIndex);
+      });
+    }
+
+    window.addEventListener("resize", updateNavVisibility);
+
+    selectImage(0);
   }
 };
 
@@ -380,14 +421,26 @@ const setupOrderForm = (product) => {
   }
   const closeButton = modal.querySelector("[data-order-form-close]");
   const form = modal.querySelector("[data-order-form]");
+  const success = form.querySelector("[data-form-success]");
+  const submitButton = form.querySelector('button[type=\"submit\"]');
 
   const openModal = () => {
     productField.value = product.name;
+    if (success) {
+      success.hidden = true;
+    }
     modal.hidden = false;
   };
 
   const closeModal = () => {
     modal.hidden = true;
+  };
+
+  const setStatus = (message) => {
+    if (success) {
+      success.textContent = message;
+      success.hidden = false;
+    }
   };
 
   button.addEventListener("click", openModal);
@@ -397,12 +450,156 @@ const setupOrderForm = (product) => {
       closeModal();
     }
   });
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    closeModal();
-    form.reset();
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+    try {
+      const response = await fetch(form.getAttribute("action") || "send.php", {
+        method: "POST",
+        body: new FormData(form),
+      });
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+      setStatus("Благодарим ви! Ще се свържем с вас скоро.");
+      form.reset();
+      setTimeout(closeModal, 1500);
+    } catch {
+      setStatus("Възникна грешка. Опитайте отново.");
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
   });
 };
+
+
+const setupImageLightbox = () => {
+  const link = document.querySelector("[data-product-image-link]");
+  const lightbox = document.querySelector("[data-lightbox]");
+  const lightboxImage = document.querySelector("[data-lightbox-image]");
+  if (!link || !lightbox || !lightboxImage) {
+    return;
+  }
+  const closeButton = lightbox.querySelector("[data-lightbox-close]");
+
+  const open = (src, alt) => {
+    lightboxImage.src = src;
+    lightboxImage.alt = alt;
+    lightbox.hidden = false;
+  };
+
+  const close = () => {
+    lightbox.hidden = true;
+  };
+
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    const image = document.querySelector("[data-product-image]");
+    open(link.getAttribute("href"), image ? image.alt : "Продукт");
+  });
+
+  if (closeButton) {
+    closeButton.addEventListener("click", close);
+  }
+
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) {
+      close();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !lightbox.hidden) {
+      close();
+    }
+  });
+};
+
+
+const setupInfoModal = () => {
+  const modal = document.querySelector("[data-order-modal]");
+  if (!modal) {
+    return;
+  }
+  const buttons = document.querySelectorAll("[data-order-button]");
+  if (!buttons.length) {
+    return;
+  }
+  const closeButton = modal.querySelector("[data-order-close]");
+
+  const open = () => {
+    modal.hidden = false;
+  };
+
+  const close = () => {
+    modal.hidden = true;
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", open);
+  });
+
+  if (closeButton) {
+    closeButton.addEventListener("click", close);
+  }
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      close();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) {
+      close();
+    }
+  });
+};
+
+const setupContactForm = () => {
+  const form = document.querySelector("[data-contact-form]");
+  if (!form) {
+    return;
+  }
+  const success = form.querySelector("[data-form-success]");
+  const submitButton = form.querySelector('button[type=\"submit\"]');
+
+  const setStatus = (message) => {
+    if (success) {
+      success.textContent = message;
+      success.hidden = false;
+    }
+  };
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+    try {
+      const response = await fetch(form.getAttribute("action") || "send.php", {
+        method: "POST",
+        body: new FormData(form),
+      });
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+      setStatus("Благодарим ви! Ще се свържем с вас скоро.");
+      form.reset();
+    } catch {
+      setStatus("Възникна грешка. Опитайте отново.");
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
+  });
+};
+
 
 const bootProductDetailPage = () => {
   const title = document.querySelector("[data-product-title]");
@@ -424,6 +621,7 @@ const bootProductDetailPage = () => {
 
   renderProductDetail(product);
   setupOrderForm(product);
+  setupImageLightbox();
 };
 
 const bootCookieBanner = () => {
@@ -465,35 +663,112 @@ const bootNavToggle = () => {
   });
 };
 
-const bootOrderModal = () => {
-  const button = document.querySelector("[data-order-button]");
-  const modal = document.querySelector("[data-order-modal]");
-  if (!button || !modal) {
+
+const setupSliderVideoSpeed = () => {
+  const video = document.querySelector(".slider-video");
+  if (!video) {
     return;
   }
-  const closeButton = modal.querySelector("[data-order-close]");
+  const fastRate = 1.5;
+  const normalRate = 1;
+  const fastUntil = 3;
 
-  const openModal = () => {
-    modal.hidden = false;
-  };
-
-  const closeModal = () => {
-    modal.hidden = true;
-  };
-
-  button.addEventListener("click", openModal);
-  closeButton.addEventListener("click", closeModal);
-  modal.addEventListener("click", (event) => {
-    if (event.target === modal) {
-      closeModal();
+  const updateRate = () => {
+    if (video.currentTime < fastUntil) {
+      if (video.playbackRate !== fastRate) {
+        video.playbackRate = fastRate;
+      }
+    } else if (video.playbackRate !== normalRate) {
+      video.playbackRate = normalRate;
     }
-  });
+  };
+
+  video.addEventListener("timeupdate", updateRate);
+  video.addEventListener("seeked", updateRate);
+  video.addEventListener("loadedmetadata", updateRate);
+  video.addEventListener("play", updateRate);
+};
+
+const bootHomeSlider = () => {
+  const slider = document.querySelector("[data-slider]");
+  if (!slider) {
+    return;
+  }
+  const slides = Array.from(slider.querySelectorAll(".slide"));
+  const dotsContainer = slider.querySelector("[data-slider-dots]");
+  const prevButton = slider.querySelector("[data-slider-prev]");
+  const nextButton = slider.querySelector("[data-slider-next]");
+  let currentIndex = 0;
+  let timerId = null;
+
+  const setActive = (index) => {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("is-active", i === index);
+    });
+    if (dotsContainer) {
+      const dots = Array.from(dotsContainer.children);
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("is-active", i === index);
+      });
+    }
+    currentIndex = index;
+  };
+
+  if (dotsContainer) {
+    dotsContainer.innerHTML = "";
+    slides.forEach((_, index) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "slider-dot";
+      dot.addEventListener("click", () => {
+        setActive(index);
+        restartTimer();
+      });
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  const goNext = () => {
+    const nextIndex = (currentIndex + 1) % slides.length;
+    setActive(nextIndex);
+  };
+
+  const goPrev = () => {
+    const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+    setActive(prevIndex);
+  };
+
+  const restartTimer = () => {
+    if (timerId) {
+      clearInterval(timerId);
+    }
+    timerId = setInterval(goNext, 6500);
+  };
+
+  if (prevButton) {
+    prevButton.addEventListener("click", () => {
+      goPrev();
+      restartTimer();
+    });
+  }
+  if (nextButton) {
+    nextButton.addEventListener("click", () => {
+      goNext();
+      restartTimer();
+    });
+  }
+
+  setActive(0);
+  restartTimer();
 };
 
 const boot = async () => {
   bootCookieBanner();
   bootNavToggle();
-  bootOrderModal();
+  bootHomeSlider();
+  setupSliderVideoSpeed();
+  setupContactForm();
+  setupInfoModal();
 
   const isProductsPage = Boolean(
     document.querySelector("[data-product-grid]")
